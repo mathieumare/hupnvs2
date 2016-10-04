@@ -1,0 +1,27 @@
+<ion-view view-title="Recherche">
+  <ion-content>
+    
+    <form ng-submit="submitSearch(search, $event)" class="item item-input-inset">
+	    <label class="item-input-wrapper">
+	    	<input type="text" ng-model="search" placeholder="Recherche...">
+	    </label>
+	    <button ng-click="idSubmit()" class="button button-small button icon-button ion-search"></button>
+
+
+      <!-- <label class="item-input">
+	          <input type="text" placeholder="Recherche..." ng-model="search" ng-keypress="function(search, $event)"> <button type="submit" class="button icon-button ion-search" ng-click="idSubmit()">
+  	 </button>
+	      </label> -->
+     
+    </form>
+
+    <ion-list>
+			<div ng-repeat="post in wpPosts">
+				<ion-item ng-href="{{post.postID}}">
+					<h3 ng-bind-html="post.title"></h3>
+				</ion-item>
+			</div>
+		</ion-list>
+
+  </ion-content>
+</ion-view>

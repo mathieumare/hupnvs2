@@ -1,0 +1,22 @@
+<ion-view view-title="{{catTitle}}">
+
+	<ion-nav-buttons side="right">
+	    <button class="right button button-icon icon ion-connection-bars network-status {{network}}"></button>
+	</ion-nav-buttons>
+	
+	<ion-content class="myaphp-cat">
+		<!-- PULL to refresh -->
+		<ion-refresher on-refresh="doRefreshPosts()"></ion-refresher>
+		<!-- {{ghSlug}} -->
+				<ion-list>
+			<div ng-repeat="post in wpPosts">
+				<ion-item href="#/app/post/{{post.postID}}" class="flexbox-container">
+					<!-- post id {{post.postID}} -->
+					<!-- <img ng-src="{{post.thumb}}" class="cat-thumb" /> -->
+					<div class="cat-thumb" style="background-image: url('{{post.thumb}}')"></div>
+					<h3 ng-bind-html="post.title" class="cat-title item-text-center item-text-wrap {{post.hasThumb}}"></h3>
+				</ion-item>
+			</div>
+		</ion-list>
+	</ion-content>
+</ion-view>

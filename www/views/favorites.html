@@ -1,0 +1,19 @@
+<ion-view view-title="Favoris">
+<ion-nav-buttons side="right">
+	        <button class="right button button-icon icon ion-ios-trash-outline" ng-click="emptyPosts()"></button>
+	</ion-nav-buttons>
+  <ion-content>
+    <!-- <h1>Favoris</h1> -->
+		<!-- <button class="button button-block button-assertive" ng-click="emptyPosts()">Supprimer Favoris</button> -->
+		<!-- {{itemsList}} -->
+        <ion-list>
+			<div ng-repeat="post in itemsList">
+				<ion-item href="#/app/favorite/{{post.id}}">
+					<h3 ng-bind-html="post.title"></h3>
+					<!-- <p ng-bind-html="post.content"></p> -->
+				</ion-item>
+			</div>
+		</ion-list>
+
+  </ion-content>
+</ion-view>

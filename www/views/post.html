@@ -1,0 +1,15 @@
+<ion-view class="post-view">
+	
+	<ion-nav-buttons side="right">
+	        <button class="right button positive button-icon icon {{favIcon}} icon-active" ng-click="checkFav()"></button>
+	        <button class="right button button-icon icon ion-connection-bars network-status {{network}}"></button>
+	</ion-nav-buttons>
+	
+	<ion-content has-subheader="false" class="post-content">
+		<!-- <button class="button button-block button-balanced" ng-click="addPostToFavorites()">Ajouter Favori</button> -->
+		<!-- <button class="button button-block button-assertive" ng-click="removePostFromFavorites()">Supprimer Favori</button> -->
+		<div class="cat-thumb" style="background-image: url('{{postThumb}}')"></div>
+		<h1 ng-bind-html="postTitle"></h1>
+		<div ng-bind-html="postContent"></div>
+	</ion-content>
+</ion-view>

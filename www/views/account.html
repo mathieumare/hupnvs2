@@ -1,0 +1,119 @@
+<ion-view view-title="Réglages">
+<!-- <div class="bar bar-header bar-light">
+	  <h1 class="title">Mon Profil</h1>
+	</div>
+ -->  
+	<ion-content>
+  	
+
+	 	<div class="list card">
+	 		<div class="item item-divider"> 
+	          Mes infos
+	        </div>
+			<label class="item item-input">
+				<span class="input-label">Prénom</span>
+				<input 	type="text" 
+						ng-model="userNotes.userName" 
+						ng-keypress="saveStorage(userNotes.userName,$event)" ng-enter="closKeyb()">
+			</label>
+
+			<div class="item item-divider"> 
+	          Mon Gestionnaire
+	        </div>
+			<label class="item item-input">
+				<span class="input-label">Nom</span>
+				<input 	type="text" 
+						ng-model="userNotes.gestName" 
+						ng-keypress="saveStorage(userNotes.userName,$event)" ng-enter="closKeyb()">
+			</label>
+			<label class="item item-input">
+				<span class="input-label">Téléphone</span>
+				<input 	type="text" 
+						ng-model="userNotes.gestTel"
+						ng-keypress="saveStorage(userNotes.userName,$event)" ng-enter="closKeyb()">
+			</label>
+		</div>
+
+		<!-- <div class="list">
+
+		  <label class="item item-input item-select">
+		    <div class="input-label">
+		      Mon GH principal
+		    </div>
+		    <select>
+		      <option 	ng-repeat="item in wpTerms"
+		      			ng-value="item.slug"
+			            ng-model="data.ghSlug">{{ item.name }}</option>
+		    </select>
+		  </label>
+
+		</div> -->
+
+		<ion-list>
+	 		<div class="item item-divider"> 
+	          Mes Groupes hospitaliers
+	        </div>
+	        
+	        <!-- <ion-radio 	ng-repeat="item in wpTerms"
+	                   	ng-value="item.slug"
+	                   	ng-model="data.ghSlug">
+	          			{{ item.name }}
+	        </ion-radio> -->
+
+	        <ion-checkbox 	ng-repeat="item in wpTerms"
+                      		ng-model="item.checked" 
+                      		ng-checked="item.checked" 
+                      		ng-change="saveGh()">
+	          				{{ item.name }}
+	        </ion-checkbox>
+		</ion-list>
+
+		<!-- <div class="item">
+          <pre ng-bind="wpTerms | json"></pre> 
+        </div> -->
+
+		<ion-list>
+	 		<div class="item item-divider"> 
+	          Mes Métiers
+	        </div>
+	        
+	        <ion-checkbox 	ng-repeat="metier in wpTermsMetiers"
+	                   	ng-model="metier.checked" 
+                  		ng-checked="metier.checked" 
+                  		ng-change="saveMetiers()">
+	          			{{ metier.name }}
+	        </ion-checkbox>
+		</ion-list>
+		<br />
+		<br />
+		<br />
+		
+
+	 	<!-- <ion-list>
+	 		<div class="item item-divider"> 
+	          GH Principal
+	        </div>
+	        
+	        <ion-radio 	ng-repeat="item in wpTerms"
+	                   	ng-value="item.slug"
+	                   	ng-model="data.ghSlug">
+	          			{{ item.name }}
+	        </ion-radio>
+		</ion-list> -->
+
+  <!--   <div class="card">
+    	{{storage}}
+    </div> -->
+
+	<!-- <div class="card">	 -->
+	<!-- <p>
+		<button class="button button-block button-balanced" ng-click="saveStorage()">Enregistrer</button>
+	</p>
+
+	<p>
+		<button class="button button-block button-assertive" ng-click="resetStorage()">Reset storage</button>
+	</p> -->
+	<!-- </div> -->
+
+  </ion-content>
+</ion-view>

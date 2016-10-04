@@ -1,0 +1,143 @@
+/* Empty. Add your own CSS if you like */
+
+ion-item i{
+	float: right;
+    position: absolute;
+    right: 1.5em;
+}
+
+img{
+	max-width: 100%;
+	height: auto;
+}
+
+.slider{
+	height: 30vh;
+}
+
+.slider-slide div{
+	height: 100% !important;
+}
+
+.ion-ios-star-outline.icon-active{
+	color: #444444 !important;
+}
+.network-status{
+	display: none !important;
+}
+
+.network-status.network-off{
+	color: red !important;
+	display: block !important;
+}
+
+.diapo-title{
+	    font-weight: bold;
+    widht: 100%;
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    padding: .5em 1em;
+}
+
+.slider-slide div.diapo-excerpt{
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    margin: 0;
+    padding: .5em 1em;
+    height: 8.3em !important;
+    line-height: 1.5em;
+    overflow: hidden;
+}
+
+
+a.diapo-wrapper{
+	width: 100%;
+	height: 100%;
+	display: block;
+	text-decoration: none;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    border: 1px solid #aaa;
+    width: 96%;
+    /*margin: 0 2%;*/
+}
+table tr td{
+	border: 1px solid #aaa;
+	padding: 5px;
+}
+
+.flexbox-container a{
+	padding: 5px !important;
+}
+
+.item h3.item-text-center{
+	left:28%;
+	width: 62%;
+	white-space: normal;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+}
+
+.item h3.item-text-center.has-thumb{
+	left:28%;
+	width: 62%;
+}
+
+.cat-thumb{
+	width: 25%;
+	float: left;
+	height: 4em;
+    background-size: cover;
+    background-color: #ccc;
+}
+
+.post-content h1{
+	font-size: 20px;
+	margin: 0;
+	line-height: 20px;
+	margin-bottom: 20px;
+	height: 60px;
+}
+
+.post-content .cat-thumb{
+	margin-right: 10px;
+    height: 60px;
+}
+
+.ion-ios-star.icon-active{
+	color: #4BC54B !important;
+}
+
+.post-content .scroll {
+	padding: 10px;
+}
+
+
+.list .item.item-accordion {
+  line-height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.09s all linear;
+}
+.list .item.item-accordion.ng-hide {
+  line-height: 0px;
+}
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+  display: block !important;
+}

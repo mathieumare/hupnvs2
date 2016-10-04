@@ -1,0 +1,14 @@
+<ion-view view-title="Favori">
+
+	<ion-nav-buttons side="right">
+	        <button class="right button button-icon icon ion-ios-trash-outline" ng-click="removePostFromFavorites()"></button>
+	</ion-nav-buttons>
+
+	<ion-content has-subheader="false">
+		
+
+		<!-- <button class="button button-block button-assertive" ng-click="removePostFromFavorites()">Supprimer Favori</button> -->
+		<h1 ng-bind-html="favTitle"></h1>
+		<div ng-bind-html="favContent"></div>
+	</ion-content>
+</ion-view>
