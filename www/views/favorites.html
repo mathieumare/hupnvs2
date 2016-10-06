@@ -8,8 +8,9 @@
 		<!-- {{itemsList}} -->
         <ion-list>
 			<div ng-repeat="post in itemsList">
-				<ion-item href="#/app/favorite/{{post.id}}">
-					<h3 ng-bind-html="post.title"></h3>
+				<ion-item href="#/app/favorite/{{post.id}}" class="flexbox-container">
+					<div class="cat-thumb" style="background-image: url('{{post.thumb}}')"></div>
+					<h3 ng-bind-html="post.title" class="cat-title item-text-center item-text-wrap {{post.hasThumb}}"></h3>
 					<!-- <p ng-bind-html="post.content"></p> -->
 				</ion-item>
 			</div>

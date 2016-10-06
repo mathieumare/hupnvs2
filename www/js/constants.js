@@ -16,7 +16,11 @@ angular.module('hupnvs2')
    	WpUrlCat: 'categories',
    	WpExcludedCats : '1',
    	WpMenuId: 37,
-   	WpPageConfig: 1123 
+   	WpPageConfig: 1123
+})
+
+.constant('databaseConfig',{
+	db_version : 1
 })
 
 .constant('NetworkSettings',{

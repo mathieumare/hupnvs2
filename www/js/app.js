@@ -12,23 +12,25 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
     $ionicPlatform.ready(function(){
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-        navigator.splashscreen.hide();
+        // navigator.splashscreen.hide();
 
         //--- Initialisation BD Locale et Synchronisation des données Offline
-        MyApHpDataService.openDbObject().then(function(data){
+        MyApHpDataService.openDbObject().then(
+            function(data){
      
 
-            var prom = [];
-            prom.push(MyApHpDataService.syncConfig());
-            prom.push(MyApHpDataService.syncOfflineMenu());
-            prom.push(MyApHpDataService.syncOfflinePosts("post"))
-            prom.push(MyApHpDataService.syncOfflinePosts("page"))
-            prom.push(MyApHpDataService.syncOfflineCategories())
+                var prom = [];
+                prom.push(MyApHpDataService.syncConfig());
+                prom.push(MyApHpDataService.syncOfflineMenu());
+                prom.push(MyApHpDataService.syncOfflinePosts("post"))
+                prom.push(MyApHpDataService.syncOfflinePosts("page"))
+                prom.push(MyApHpDataService.syncOfflineCategories())
 
-            $q.all(prom).then(function() {
-                console.info("DB init : "+JSON.stringify(data));
-            });     
-        });
+                $q.all(prom).then(function() {
+                    console.info("DB init : "+JSON.stringify(data));
+                });     
+            }
+        );
     // });
 
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -141,44 +143,44 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
         return deferred.promise;
     }
 
-    this.getWPMenusItem = function(item){
-        var deferred = $q.defer();
+    // this.getWPMenusItem = function(item){
+    //     var deferred = $q.defer();
 
-        $ionicPlatform.ready(function(){
+    //     $ionicPlatform.ready(function(){
 
-            // MyApHpDataService.publicExecSQL('SELECT id from POSTS').then(function(datas){
-            //     console.log('----> posts : '+datas.rows.length)
-            // })
-            var url = WpConfig.WpUrl;
-            var menuId = WpConfig.WpMenuId;
-            console.log ('***** getWPMenusItems '+item+' *****')
-            var urlQuery = WpConfig.WpUrl+'wp-json/wp-api-menus/v2/menus/'+menuId;
+    //         // MyApHpDataService.publicExecSQL('SELECT id from POSTS').then(function(datas){
+    //         //     console.log('----> posts : '+datas.rows.length)
+    //         // })
+    //         var url = WpConfig.WpUrl;
+    //         var menuId = WpConfig.WpMenuId;
+    //         console.log ('***** getWPMenusItems '+item+' *****')
+    //         var urlQuery = WpConfig.WpUrl+'wp-json/wp-api-menus/v2/menus/'+menuId;
 
-            console.log ('------> getWPMenus query : '+urlQuery)
-            //$cacheFactory.get('$http').removeAll()
+    //         console.log ('------> getWPMenus query : '+urlQuery)
+    //         //$cacheFactory.get('$http').removeAll()
 
-            $http.get(urlQuery,{ timeout: NetworkSettings.TimeOut,cache:false }).then(
-                function success(response){
-                    console.log ('------> getWPMenusItems ONLINE')
-                    sessionService.set("online", 1);
-                    createMenuStructItem(response.data.items, item).then(function(data){
-                        deferred.resolve(data);
+    //         $http.get(urlQuery,{ timeout: NetworkSettings.TimeOut,cache:false }).then(
+    //             function success(response){
+    //                 console.log ('------> getWPMenusItems ONLINE')
+    //                 sessionService.set("online", 1);
+    //                 createMenuStructItem(response.data.items, item).then(function(data){
+    //                     deferred.resolve(data);
                         
-                    })
-                },
-                function error(response){
-                    console.log ('------> getWPMenus OFFLINE : '+ JSON.stringify(response))
-                    sessionService.set("online", 0);
-                    var data = sessionService.get("menuStruct", item);
-                    createMenuStructItem(data, item).then(function(data){
-                        deferred.resolve(data);
+    //                 })
+    //             },
+    //             function error(response){
+    //                 console.log ('------> getWPMenus OFFLINE : '+ JSON.stringify(response))
+    //                 sessionService.set("online", 0);
+    //                 var data = sessionService.get("menuStruct", item);
+    //                 createMenuStructItem(data, item).then(function(data){
+    //                     deferred.resolve(data);
                         
-                    })
-                }
-            )
-        })
-        return deferred.promise;
-    }
+    //                 })
+    //             }
+    //         )
+    //     })
+    //     return deferred.promise;
+    // }
 
     //---    
     //--- Methode de récupération des catégories (filtrées suivant les preferences utilisateur)
@@ -496,123 +498,123 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
     //     return deferred.promise;
     // }
 
-    createMenuStructItem = function(data, catId){
-        console.log('createMenuStructItem : '+catId)
-        var deferred = $q.defer();
-        var clickFn = '';
-        var wpMenu = [];
+    // createMenuStructItem = function(data, catId){
+    //     console.log('createMenuStructItem : '+catId)
+    //     var deferred = $q.defer();
+    //     var clickFn = '';
+    //     var wpMenu = [];
 
-        for(var i=0; i< data.length; i++){
-            var menuEntryType = data[i].object;
-            var catID = data[i].object_id;
-            var name = data[i].title;
-            var parentID = 0;
-            var itemID = 0;
+    //     for(var i=0; i< data.length; i++){
+    //         var menuEntryType = data[i].object;
+    //         var catID = data[i].object_id;
+    //         var name = data[i].title;
+    //         var parentID = 0;
+    //         var itemID = 0;
 
-            var destURL = '';
+    //         var destURL = '';
 
-            if(catId == catID){
-                parentID = data[i].parent
-                if(parentID > 0){
-                    itemID = parentID;
-                }else{
-                    itemID = data[i].id;
-                }
-                console.log ('PARENT ID : '+ itemID);
-                i=data.length;
-            }
+    //         if(catId == catID){
+    //             parentID = data[i].parent
+    //             if(parentID > 0){
+    //                 itemID = parentID;
+    //             }else{
+    //                 itemID = data[i].id;
+    //             }
+    //             console.log ('PARENT ID : '+ itemID);
+    //             i=data.length;
+    //         }
 
-        }
+    //     }
 
-        for(var i=0; i< data.length; i++){
-            if(itemID == data[i].id){
-                var menuEntryType = data[i].object;
-                var catID = data[i].object_id;
-                var name = data[i].title;
-                var destURL = '';
+    //     for(var i=0; i< data.length; i++){
+    //         if(itemID == data[i].id){
+    //             var menuEntryType = data[i].object;
+    //             var catID = data[i].object_id;
+    //             var name = data[i].title;
+    //             var destURL = '';
 
-                switch(menuEntryType){
-                    case 'category': 
-                        destURL = '#/app/cat/'+catID;    
-                        break;
-                    case 'post': 
-                        destURL = '#/app/post/a'+catID;    
-                        break;
-                    case 'page': 
-                        destURL = '#/app/post/p'+catID;    
-                        break;
-                    case 'custom': 
-                        console.log("custom Menu Entry "+encodeURIComponent(data[i].url))
+    //             switch(menuEntryType){
+    //                 case 'category': 
+    //                     destURL = '#/app/cat/'+catID;    
+    //                     break;
+    //                 case 'post': 
+    //                     destURL = '#/app/post/a'+catID;    
+    //                     break;
+    //                 case 'page': 
+    //                     destURL = '#/app/post/p'+catID;    
+    //                     break;
+    //                 case 'custom': 
+    //                     console.log("custom Menu Entry "+encodeURIComponent(data[i].url))
                         
-                        sessionService.set("ExtURL",data[i].url);
-                        destURL = '#';    
-                        clickFn = 'openBrowser()'; 
-                        break;
-                    default: 
-                        destURL = '#/app/cat/'+catID;    
-                }
+    //                     sessionService.set("ExtURL",data[i].url);
+    //                     destURL = '#';    
+    //                     clickFn = 'openBrowser()'; 
+    //                     break;
+    //                 default: 
+    //                     destURL = '#/app/cat/'+catID;    
+    //             }
 
-                wpMenu[i] = {
-                    catID: catID,
-                    name: name,
-                    items: [],
-                    destURL : destURL,
-                    clickFn : clickFn,
-                    iconplus: '',
-                    iconminus: ''
-                }
+    //             wpMenu[i] = {
+    //                 catID: catID,
+    //                 name: name,
+    //                 items: [],
+    //                 destURL : destURL,
+    //                 clickFn : clickFn,
+    //                 iconplus: '',
+    //                 iconminus: ''
+    //             }
 
-                //--- Gestion des sous menus
-                var childsCount = 0;
-                if (data[i].children){
-                    childsCount = data[i].children.length;
+    //             //--- Gestion des sous menus
+    //             var childsCount = 0;
+    //             if (data[i].children){
+    //                 childsCount = data[i].children.length;
 
-                    for(j = 0; j < data[i].children.length; j++ ){
-                        var subMenuEntryType = data[i].children[j].object;
-                        var subMenuID = data[i].children[j].object_id;
-                        var subMenuName = data[i].children[j].title;
+    //                 for(j = 0; j < data[i].children.length; j++ ){
+    //                     var subMenuEntryType = data[i].children[j].object;
+    //                     var subMenuID = data[i].children[j].object_id;
+    //                     var subMenuName = data[i].children[j].title;
                         
-                        switch(subMenuEntryType){
-                            case 'category': 
-                                destURL = '#/app/cat/'+subMenuID;    
-                                break;
-                            case 'post': 
-                                destURL = '#/app/post/a'+subMenuID;    
-                                break;
-                            case 'page': 
-                                destURL = '#/app/post/p'+subMenuID;    
-                                break;
-                            case 'custom': 
-                                console.log("custom Sub Menu Entry")
-                                var extURL =  data[i].children[j].url
-                                // toParamsJson = JSON.stringify(extURL);
-                                // destURL = '#/ext/'+extURL;    
-                                destURL = '#';  
-                                clickFn = 'openBrowser()';
-                                break;
-                            default: 
-                                destURL = '#/app/cat/'+subMenuID;    
-                        }
+    //                     switch(subMenuEntryType){
+    //                         case 'category': 
+    //                             destURL = '#/app/cat/'+subMenuID;    
+    //                             break;
+    //                         case 'post': 
+    //                             destURL = '#/app/post/a'+subMenuID;    
+    //                             break;
+    //                         case 'page': 
+    //                             destURL = '#/app/post/p'+subMenuID;    
+    //                             break;
+    //                         case 'custom': 
+    //                             console.log("custom Sub Menu Entry")
+    //                             var extURL =  data[i].children[j].url
+    //                             // toParamsJson = JSON.stringify(extURL);
+    //                             // destURL = '#/ext/'+extURL;    
+    //                             destURL = '#';  
+    //                             clickFn = 'openBrowser()';
+    //                             break;
+    //                         default: 
+    //                             destURL = '#/app/cat/'+subMenuID;    
+    //                     }
 
-                        wpMenu[i].items.push({
-                            catID: subMenuID,
-                            name: subMenuName,
-                            destURL : destURL,
-                            clickFn : clickFn
-                        });
+    //                     wpMenu[i].items.push({
+    //                         catID: subMenuID,
+    //                         name: subMenuName,
+    //                         destURL : destURL,
+    //                         clickFn : clickFn
+    //                     });
 
-                        wpMenu[i].iconplus = 'ion-plus';
-                        wpMenu[i].iconminus = 'ion-minus';
-                        wpMenu[i].destURL = '#';
-                    }
-                }
-                i=data.length;
-            }
-        }
+    //                     wpMenu[i].iconplus = 'ion-plus';
+    //                     wpMenu[i].iconminus = 'ion-minus';
+    //                     wpMenu[i].destURL = '#';
+    //                 }
+    //             }
+    //             i=data.length;
+    //         }
+    //     }
 
-        deferred.resolve(wpMenu);
-        return deferred.promise;
-    }
+    //     deferred.resolve(wpMenu);
+    //     return deferred.promise;
+    // }
 
 
 
@@ -917,6 +919,18 @@ return {
         }
         return network;
     }
+
+    //--- Fonction de récupération des informations (ACF) de la catégorie
+    this.getCatInfos = function(catId){
+        var localCatInfos = [];
+
+        var CatInfos = sessionService.get("catInfos")
+        console.log("getCatInfos : " + CatInfos);
+        // for(var i == 0; i < getCatInfos.length; i++){
+
+        // }
+
+    }
     
 })
 
@@ -925,7 +939,7 @@ return {
 //----------------------------------------------------------------------------------------------------
 //--- Service de gestion de Base de donnée locale
 //----------------------------------------------------------------------------------------------------
-.factory('MyApHpDataService', function ($q, $http,$cordovaSQLite, $ionicPlatform,LoaderService, WpConfig, getUserPrefs, sessionService) {
+.factory('MyApHpDataService', function ($q, $http,$cordovaSQLite, $ionicPlatform,LoaderService, WpConfig, getUserPrefs, sessionService, databaseConfig) {
     
     //--- déclarations des variables
     var db, dbName = "myaphp.db";
@@ -952,12 +966,17 @@ return {
     //--- Fonction d'execution d'une requete SQLite
     //--- ARG : chaine contenant la requete complete
     var execSQL = function(query, params, log){
+        if(log){
+            console.log("execSQL : " + query)
+        }
       var deferred = $q.defer();
+
       if(!params){
         $cordovaSQLite.execute(db, query)
         .then(function(res){
             if(log){
                 console.info("SQL Success: "+query );    
+                
             }        
             setTimeout(function(){
               deferred.resolve(res);  
@@ -991,42 +1010,159 @@ return {
       
       var deferred = $q.defer();
       var query = 'PRAGMA table_info('+table+')';
+      // var query = 'select * from '+table;
+      // var query = "SELECT sql FROM sqlite_master WHERE tbl_name = '"+table+"' AND type = 'table'";
 
       if(!type){
         type = 'text';
       }
-      //console.log ('updateStruct : '+ query)
-      $cordovaSQLite.execute(db, query)
-      .then(function(res){
-        var fieldFound = 0;
-        for(var i=0; i<res.rows.length; i++){
-            var currentField = res.rows.item(i).name;
-            if (field == currentField){
-                fieldFound = 1;
-            }
-        }
+      //console.log ('updateStruct : '+ query);
 
-        if(fieldFound == 0){
-            var queryAlter = 'ALTER TABLE '+table+' ADD COLUMN '+ field +' '+ type;
-            //console.log(queryAlter);
+      // $cordovaSQLite.execute(db, query)
+      // .then(function(res){
+      //   var fieldFound = 0;
+      //   for(var i=0; i<res.rows.length; i++){
+      //       console.log(res.rows.item(i))
+      //       var currentField = res.rows.item(i).name;
+      //       if (field == currentField){
+      //           fieldFound = 1;
+      //       }
+      //   }
 
-            $cordovaSQLite.execute(db, queryAlter).then(function(){
-                setTimeout(function(){
-                    deferred.resolve("Success");  
-                }, 0)  
-            });
+      //   if(fieldFound == 0){
+      //       var queryAlter = 'ALTER TABLE '+table+' ADD COLUMN '+ field +' '+ type;
+      //       //console.log(queryAlter);
+
+      //       $cordovaSQLite.execute(db, queryAlter).then(function(){
+      //           setTimeout(function(){
+      //               deferred.resolve("Success");  
+      //           }, 0)  
+      //       });
             
-        }else{
-            //console.info('Add col "'+ field +'" to table "'+table+'" : no update needed');
-            deferred.resolve("Success");    
-        }
+      //   }else{
+      //       //console.info('Add col "'+ field +'" to table "'+table+'" : no update needed');
+      //       deferred.resolve("Success");    
+      //   }
         
-      }, onErrorQuery);
+      // }, onErrorQuery);
+    
+        
+
+
+
+        var checkFieldQuery = 'SELECT '+ field +' FROM '+table+' limit 1;';
+
+        $cordovaSQLite.execute(db, checkFieldQuery)
+        .then(function(){
+            setTimeout(function(res){
+                console.log("FIND "+table+" "+field+" : " + res);
+
+                if(!res){
+                    var queryAlter = 'ALTER TABLE '+table+' ADD COLUMN '+ field +' '+ type;
+                    //console.log(queryAlter);
+
+                    $cordovaSQLite.execute(db, queryAlter).then(function(){
+                        setTimeout(function(){
+                            deferred.resolve("Success");  
+                        }, 0)  
+                    });
+                }else{
+                    deferred.resolve("Success");
+                }
+                //deferred.resolve("Success");  
+            }, 0)  
+        }, onErrorQuery);
+
+
+
+
+
+
+
+
+// if(rev != SQLITE_OK){
+//     console.log('ADD')
+//     deferred.resolve("Success");  
+// }else{
+//     console.log('NO ADD')
+//     deferred.resolve("Success");  
+// }
+
+            // var queryAlter = 'ALTER TABLE '+table+' ADD COLUMN '+ field +' '+ type;
+            // //console.log(queryAlter);
+
+            // $cordovaSQLite.execute(db, queryAlter)
+            // .then(function(){
+            //     setTimeout(function(){
+            //         deferred.resolve("Success");  
+            //     }, 0)  
+            // }, onErrorQuery);
+
+        // var queryAlter = 'ALTER TABLE '+table+' ADD COLUMN '+ field +' '+ type;
+        //     //console.log(queryAlter);
+
+        //     $cordovaSQLite.execute(db, queryAlter).then(function(){
+        //         setTimeout(function(){
+        //             deferred.resolve("Success");  
+        //         }, 0)  
+        //     });
+
       return deferred.promise;
+    }
+
+    var updateStructNew = function(table, query, fields){
+
+        console.log("function updateStructNew : "+ query)
+        var deferred = $q.defer();
+
+        //--- 1 - COPIE DE LA TABLE
+        var queryRename = 'ALTER TABLE '+table+' RENAME TO BCK_'+ table;
+        
+        //--- 2 - EFFACEMENT DE LA TABLE
+        var queryDelete0 = 'DROP TABLE IF EXISTS '+ table;
+
+        //--- 2 - CREATION DE LA NOUVELLE TABLE
+        var queryCreate = query;
+
+        //--- 3 - INJECTION DES DONNEES DE LA TBLE COPIEE DANS LA NOUVELLE
+        var queryCopy = 'INSERT INTO '+table+' ('+fields+') SELECT '+fields+' FROM BCK_'+ table;
+
+        //--- 4 - EFFCEMENT DE LA TABLE COPIEE
+        var queryDelete = 'DROP TABLE IF EXISTS BCK_'+ table;
+
+        execSQL(queryDelete)
+            .then(function(){
+                console.log("--> updateStructNew : initalDelete OK")
+                return execSQL(queryRename);
+            })
+            .then(function(){
+                console.log("--> updateStructNew : queryRename OK")
+                return execSQL(queryDelete0);
+            })
+            .then(function(){
+                console.log("--> updateStructNew : queryDelete0 OK")
+                return execSQL(queryCreate);
+            })
+            .then(function(){
+                console.log("--> updateStructNew : queryCreate OK")
+                console.log(queryCopy);
+                return execSQL(queryCopy);
+            })
+            .then(function(){
+                console.log("--> updateStructNew : queryCopy OK")
+                return execSQL(queryDelete);
+            })
+            .then(function(){
+                console.log("--> updateStructNew : queryDelete OK")
+                deferred.resolve("Success");
+            });
+        
+        return deferred.promise;
     }
     
     //--- fonction d'init de la base choisie
     var initDatabase = function(result){
+        console.log("function : initDatabase")
         var deferred = $q.defer();
         // var query1 = 'DROP TABLE IF EXISTS DUMP_POSTS';
         // var query2 = 'CREATE TABLE IF NOT EXISTS DUMP_POSTS (id integer primary key, title, content, favorite integer)';
@@ -1034,57 +1170,95 @@ return {
         // var query4 = 'DROP TABLE IF EXISTS POSTS';
         // var query5 = 'CREATE TABLE IF NOT EXISTS POSTS (id integer primary key, title, content, favorite integer, post_type text default "post")';
 
-        //--- creation des tables
-        var query1 = 'CREATE TABLE IF NOT EXISTS POSTS (id integer primary key, title, content, favorite integer, post_type text default "post")';
-        var query2 = 'CREATE TABLE IF NOT EXISTS CATEGORIES (id integer primary key, name, parent)';
-        var query3 = 'CREATE TABLE IF NOT EXISTS POST_CAT (id integer primary key autoincrement, cat_id integer, post_id integer)';
-        var query4 = 'CREATE TABLE IF NOT EXISTS GH (id integer primary key, title text)';
-        var query5 = 'CREATE TABLE IF NOT EXISTS METIER (id integer primary key, title text)';
+        //--- creation des table
+        var local_db_version = sessionService.get('db_version');
         
-        //--- execution des requetes d'initialisation en séquence       
-        execSQL(query1)
-        .then(function(){
-            return execSQL(query2);
-        })
-        .then(function(){
-            return execSQL(query3);
-        })
-        .then(function(){
-            return execSQL(query4);
-        })
-        .then(function(){
-            return execSQL(query5);
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'favorite', 'integer');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'post_type');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'hasThumb');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'thumb');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'classPortrait');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'imgPortrait');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'nomPortrait');
-        })
-        .then(function(){
-            return updateStruct('POSTS', 'titrePortrait');
-        })
-        .then(function(){
-            return updateStruct('CATEGORIES', 'entry_type');
-        })
-        .then(function(){
+        if(local_db_version != databaseConfig.db_version){
+        //     console.log("db_version : " +databaseConfig.db_version);    
+        
+
+        //     var query1 = "CREATE TABLE BCK_POSTS AS (SELECT * FROM POSTS)";
+        //     var query1 = "SELECT * FROM POSTS";
+
+        //     execSQL(query1,'',1)
+        //     .then(function(){
+        //         console.log("CREATE BCK POSTS");
+        //         return deferred.promise;
+        //     })
+
+        // }else{
+
+            //--- Requete de création initiale des tables
+            var query1 = 'CREATE TABLE IF NOT EXISTS POSTS (id integer primary key, title, content, favorite integer, post_type text default "post")';
+            var query2 = 'CREATE TABLE IF NOT EXISTS CATEGORIES (id integer primary key, name, parent)';
+            var query3 = 'CREATE TABLE IF NOT EXISTS POST_CAT (id integer primary key autoincrement, cat_id integer, post_id integer)';
+            var query4 = 'CREATE TABLE IF NOT EXISTS GH (id integer primary key, title text)';
+            var query5 = 'CREATE TABLE IF NOT EXISTS METIER (id integer primary key, title text)';
+            
+            //--- Requete de Mise à jour des tables
+            var query1_1 = 'CREATE TABLE POSTS (id integer primary key, title, content, favorite integer, post_type text default "post", hasThumb, thumb, classPortrait, imgPortrait)';
+            var fields1_1 = 'id,title,content,favorite,post_type';
+            var query2_1 = 'CREATE TABLE CATEGORIES (id integer primary key, name, parent, entry_type)';
+            var fields2_1 = 'id,name,parent,entry_type';
+
+            //--- execution des requetes d'initialisation en séquence       
+            execSQL(query1)
+            .then(function(){
+                return execSQL(query2);
+            })
+            .then(function(){
+                return execSQL(query3);
+            })
+            .then(function(){
+                return execSQL(query4);
+            })
+            .then(function(){
+                return execSQL(query5);
+            })
+            .then(function(){
+                return updateStructNew('POSTS', query1_1,fields1_1);
+            })
+            .then(function(){
+                return updateStructNew('CATEGORIES', query2_1,fields2_1);
+            })
+            .then(function(){
+                return updateStruct('POSTS', 'post_type');
+            })
+            // .then(function(){
+            //     return updateStruct('POSTS', 'hasThumb');
+            // })
+            // .then(function(){
+            //     return updateStruct('POSTS', 'thumb');
+            // })
+            // .then(function(){
+            //     return updateStruct('POSTS', 'classPortrait');
+            // })
+            // .then(function(){
+            //     return updateStruct('POSTS', 'imgPortrait');
+            // })
+            // .then(function(){
+            //     return updateStruct('POSTS', 'nomPortrait');
+            // })
+            // .then(function(){
+            //     return updateStruct('POSTS', 'titrePortrait');
+            // })
+            // .then(function(){
+            //     return updateStruct('CATEGORIES', 'entry_type');
+            // })
+            
+            .then(function(){
+                sessionService.set('db_version', databaseConfig.db_version);
+                deferred.resolve("Success");
+            });
+        }else{
+            console("DB UP TO DATE");
             deferred.resolve("Success");
-        });
+        }
+
+        // }
+        
+
+        
 
         return deferred.promise;
     }
@@ -1132,6 +1306,8 @@ return {
       
       //--- initilatisations de la BDD(appel des fonctions ci-dessus)
       openDbObject : function(){
+
+        console.log("function : openDbObject");
         var deferred = $q.defer();
 
         $ionicPlatform.ready(function () {
@@ -1158,6 +1334,7 @@ return {
     //--- Méthodes de gestion de posts offline
     //-----------------------------------------
     syncConfig : function(){
+        console.log("----->syncConfig")
         var deferred = $q.defer();
         $ionicPlatform.ready(function(){
             var query1 = urlBase+ WpConfig.WpUrlPages+ '/' +WpConfig.WpPageConfig;
@@ -1169,6 +1346,7 @@ return {
                     var catInfos = response.data.acf.categories;
                     // console.log('TEST : '+response.data.acf.categories);
                     sessionService.set("catInfos", catInfos);
+                    deferred.resolve(response); 
                     // for(var i=0; i < data.length; i++){
 
                     // }
@@ -1381,10 +1559,17 @@ return {
 
       //--- méthode d'ajout en favori
       addFavorite: function(favorite){
-        //console.log("addFavorites : " + favorite[0].content);
+        console.log("addFavorites : " + favorite[0].title);
         //return($cordovaSQLite.execute(db, 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite post_type) VALUES (? , ?, ?, ?, ?)',[favorite[0].id, favorite[0].title, favorite[0].content, 1, "post"]));
-        var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (? , ?, ?, ?, ?)';
-        var args = [favorite[0].id, favorite[0].title, favorite[0].content, 1, "post"]
+        var query = 'REPLACE INTO POSTS (id, title, content, favorite, post_type, hasThumb, thumb) VALUES (? , ?, ?, ?, ?, ?, ?)';
+        // var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type, hasThumb, thumb) VALUES (? , ?, ?, ?, ?, ?, ?)';
+        var args = [favorite[0].id, favorite[0].title, favorite[0].content, 1, "post", favorite[0].hasThumb, favorite[0].thumb]
+        //var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (? , ?, ?, ?, ?)';
+
+        //var query = 'SELECT count(id) from posts where id = '+favorite[0].id;
+        //var query = 'REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (? , ?, ?, ?, ?)';
+        //var args = [favorite[0].id, favorite[0].title, favorite[0].content, 1, "post"]
+
         return execSQL(query, args)
       },
 
@@ -1411,7 +1596,7 @@ return {
             if(res.rows.length > 0) {
                   for(var i = 0; i < res.rows.length; i++) {
                       // console.log("select query : "+res.rows.item(i).content);          
-                      items.push({id : res.rows.item(i).id, title : res.rows.item(i).title, content : res.rows.item(i).content})
+                      items.push({id : res.rows.item(i).id, title : res.rows.item(i).title, content : res.rows.item(i).content, hatThumb : res.rows.item(i).hasThumb, thumb : res.rows.item(i).thumb})
                   }
               }
               callback(items);
@@ -1439,7 +1624,7 @@ return {
             var items = [];
 
             if(res.rows.length > 0) {       
-                items.push({id : res.rows.item(0).id, title : res.rows.item(0).title, content : res.rows.item(0).content});
+                items.push({id : res.rows.item(0).id, title : res.rows.item(0).title, content : res.rows.item(0).content, hatThumb : res.rows.item(0).hasThumb, thumb : res.rows.item(0).thumb});
             }
             callback(items);
           }, onErrorQuery);

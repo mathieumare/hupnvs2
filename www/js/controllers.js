@@ -18,13 +18,13 @@ angular.module('hupnvs2.controllers', [])
     });
 
     
-   $scope.$on('$ionicView.afterEnter', function(event) {
-        $ionicSideMenuDelegate.canDragContent(false);
-    });
-    //enable side menu drag before moving to next view
-    $scope.$on('$ionicView.beforeLeave', function(event) {
-        $ionicSideMenuDelegate.canDragContent(true);
-    });
+   // $scope.$on('$ionicView.afterEnter', function(event) {
+   //      $ionicSideMenuDelegate.canDragContent(false);
+   //  });
+   //  //enable side menu drag before moving to next view
+   //  $scope.$on('$ionicView.beforeLeave', function(event) {
+   //      $ionicSideMenuDelegate.canDragContent(true);
+   //  });
 
     //$scope.network = getUserPrefs.netIconStatus();
     //console.log("ionicView")
@@ -472,7 +472,7 @@ $scope.openBrowser = function() {
                 console.log(response)
                 var data = response.data;
                 $scope.catTitle = data.name;
-
+                var catInfos = getUserPrefs.getCatInfos(data.parent);
                 console.log(data.name);
             },
             function error(response){

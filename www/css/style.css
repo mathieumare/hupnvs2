@@ -175,6 +175,7 @@ h3.titre-portrait{
     float: left;
 }
 
+.myaphp-cat h1,
 .post-content h1{
 	font-size: 16px;
 	margin: 0;

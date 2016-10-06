@@ -8,7 +8,12 @@
 		<!-- PULL to refresh -->
 		<ion-refresher on-refresh="doRefreshPosts()"></ion-refresher>
 		<!-- {{ghSlug}} -->
-				<ion-list>
+
+		<!-- <div class="cat-thumb {{hasThumb}}" style="background-image: url('{{postThumb}}')"> -->
+			<h1 ng-bind-html="catTitle"></h1>
+		<!-- </div> -->
+
+		<ion-list>
 			<div ng-repeat="post in wpPosts">
 				<ion-item href="#/app/post/{{post.postID}}" class="flexbox-container">
 					<!-- post id {{post.postID}} -->
