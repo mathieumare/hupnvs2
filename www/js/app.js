@@ -659,12 +659,12 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
             var catPicto = '';
             if(catInfos){
                 for(var j=0; j<catInfos.length; j++){
-                console.log(catID);
+                //console.log(catID);
                 if(catID ==catInfos[j].id_cat ){
                     catColor = catInfos[j].couleur_caegorie;
                     catPicto = catInfos[j].picto_categorie;
 
-                    console.log('----->'+catInfos[j].id_cat)    
+                    //console.log('----->'+catInfos[j].id_cat)    
                 }
                 
             }
