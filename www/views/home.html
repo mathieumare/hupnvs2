@@ -11,15 +11,20 @@
 		<ion-refresher on-refresh="doRefreshCat()"></ion-refresher>
 		<!--<p>{{online}}</p> -->
 		<!-- <span class="button button-icon icon ion-settings"></span> -->
+		<img class="gh-logo" src="img/logo-hupnvs.png" />
+
 		<ion-slide-box on-slide-changed="slideHasChanged($index)">
 		  <ion-slide ng-repeat="post in wpPosts">
 		    <a href="#/app/post/{{post.postID}}" class="box blue diapo-wrapper" style="background-image: url('{{post.thumb}}'); background-size: cover">
 		    <!-- <div class="box blue"> -->
 		    	<!-- <img ng-src="{{post.thumb}}"> -->
-		    	<p class='diapo-title' ng-bind="post.title"></p>
-			<!-- {{post.excerpt}} -->
-			<div class='diapo-excerpt' ng-bind-html="post.excerpt"></div>
+			<div class="diapo-overlay">
+				<p class='diapo-title' ng-bind="post.title"></p>
+				<!-- {{post.excerpt}} -->
+				<div class='diapo-excerpt' ng-bind-html="post.excerpt"></div>
 		    	<!-- <div ng-bind=""></div> -->
+			</div>
+		    	
 		    </a>
 		  </ion-slide> 
 		</ion-slide-box>
@@ -28,9 +33,10 @@
 			<div ng-repeat="cat in wpCategories">
 				<!-- Affichage Cat N0 -->
 				<ion-item class="item-stable"
+					style="background-color: {{cat.color}}; color: #fff"
                     ng-click="toggleGroup(cat); {{cat.clickFn}}"
                     ng-class="{active: isGroupShown(cat)}"
-                    href="{{cat.destURL}}">    
+                    href="{{cat.destURL}}">  
 		            &nbsp;
 		            {{cat.name}}
 		            <i class="icon" ng-class="isGroupShown(cat) ? '{{cat.iconminus}}' : '{{cat.iconplus}}'"></i>

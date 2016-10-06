@@ -15,10 +15,10 @@ angular.module('hupnvs2')
    	WpUrlPages: 'pages',
    	WpUrlCat: 'categories',
    	WpExcludedCats : '1',
-   	WpMenuId: 37 
+   	WpMenuId: 37,
+   	WpPageConfig: 1123 
 })
 
 .constant('NetworkSettings',{
 	TimeOut : 6000
-
 })

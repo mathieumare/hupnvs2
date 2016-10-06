@@ -35,12 +35,19 @@
   <body ng-app="hupnvs2">
 
     <!-- <div ng-include src="menu.html"></div> -->
-    <ion-side-menus ng-controller="NavCtrl">
+
+    <!-- NAVBAR -->
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+    </ion-nav-bar>
+
+    <ion-nav-view></ion-nav-view>
+
+
+    <!-- <ion-side-menus ng-controller="NavCtrl">
         <ion-side-menu-content>
           <ion-nav-bar class="bar-positive">
-            <!-- <ion-nav-back-button class="button-icon ion-chevron-left">Retour
-            </ion-nav-back-button> -->
-          
             <ion-nav-buttons side="left">
               <button class="button button-icon button-clear ion-navicon" ng-click="showMenu()">
               </button>
@@ -59,7 +66,8 @@
           <ion-content has-header="true">
             <ion-list>
             <div ng-repeat="cat in wpCategories">
-                <!-- Affichage Cat N0 -->
+                
+
                 <ion-item class="item-stable"
                     ng-click="toggleGroup(cat); {{cat.clickFn}}; closeMenu(cat)"
                     ng-class="{active: isGroupShown(cat)}"
@@ -69,7 +77,8 @@
                     <i class="icon" ng-class="isGroupShown(cat) ? '{{cat.iconminus}}' : '{{cat.iconplus}}'"></i>
                 </ion-item>
 
-                <!-- Affichage sous-Cat -->
+
+
                 <ion-item class="item-accordion"
                         ng-repeat="item in cat.items"
                         ng-show="isGroupShown(cat)"
@@ -80,21 +89,9 @@
                 </ion-item>
             </div>
         </ion-list>
-        
-            <!-- <ul class="list">
-              <li>
-                <a class="item" menu-close nav-clear href="#/tab/home">Home</a>
-              </li>
-              <li>
-                <a class="item" menu-close href="#/tab/facts">Facts</a>
-              </li>
-              <li>
-                <a class="item" menu-close href="#/tab/facts2">More Facts</a>
-              </li>
-            </ul> -->
           </ion-content>
         </ion-side-menu>
-    </ion-side-menus>
+    </ion-side-menus> -->
 
     <!--
     Create tabs with an icon and label, using the tabs-positive style.

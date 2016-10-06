@@ -11,13 +11,19 @@ img{
 	height: auto;
 }
 
-.slider{
-	height: 30vh;
+img.gh-logo {
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 20px;
 }
 
-.slider-slide div{
-	height: 100% !important;
+.item-complex.item-stable > .item-content {
+	background-color: inherit;
+	color: inherit;
+	font-weight: bold;
 }
+
+
 
 .ion-ios-star-outline.icon-active{
 	color: #444444 !important;
@@ -31,16 +37,32 @@ img{
 	display: block !important;
 }
 
+/*-------------*/
+/*--- DIAPO ---*/
+/*-------------*/
+
+.slider{
+	height: 30vh;
+}
+
+.slider-slide div{
+	height: 100% !important;
+}
+.diapo-overlay{
+	background-color: rgba(0,0,0,0.5);	
+}
+
+
 .diapo-title{
 	    font-weight: bold;
     widht: 100%;
-    background-color: rgba(0,0,0,0.5);
+    /*background-color: rgba(0,0,0,0.5);*/
     color: #fff;
     padding: .5em 1em;
 }
 
 .slider-slide div.diapo-excerpt{
-    background-color: rgba(0,0,0,0.5);
+    /*background-color: rgba(0,0,0,0.5);*/
     color: #fff;
     margin: 0;
     padding: .5em 1em;
@@ -61,13 +83,17 @@ table {
     border-spacing: 0;
     border-collapse: collapse;
     border: 1px solid #aaa;
-    width: 96%;
+    width: 100%;
     /*margin: 0 2%;*/
 }
 table tr td{
 	border: 1px solid #aaa;
 	padding: 5px;
 }
+
+/*------------*/
+/*--- POST ---*/
+/*------------*/
 
 .flexbox-container a{
 	padding: 5px !important;
@@ -106,24 +132,80 @@ table tr td{
     background-color: #ccc;
 }
 
+.cat-thumb.has-thumb{
+	    
+}
+
+
+
+.bloc-portrait{
+	display: none;
+}
+
+.bloc-portrait.has-portrait{
+	display: block;
+	width: 100%;
+	margin-bottom: 20px;
+	float: left;
+}
+
+h2.nom-portrait{
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 16px;
+    margin-top: 32px;
+}
+
+h3.titre-portrait{
+	font-size: 14px;
+}
+
+.bloc-portrait .img-portrait{
+	display: block;
+    width: 30vw;
+    height: 30vw;
+    background-color: #aaa;
+    background-size: contain;
+    background-repeat: no-repeat;
+    float: left;
+}
+
+.bloc-portrait .infos-portrait {
+    width: 60vw;
+    float: left;
+}
+
 .post-content h1{
-	font-size: 20px;
+	font-size: 16px;
 	margin: 0;
 	line-height: 20px;
-	margin-bottom: 20px;
-	height: 60px;
+	/*height: 60px;*/
+	background-color: rgba(0,0,0,0.6);
+    padding: 10px;
+    color: #fff;
 }
 
 .post-content .cat-thumb{
+	height: auto;
+	width: 100%;
+	background-color: transparent;
+	margin-bottom: 20px
+}
+
+.post-content .cat-thumb.has-thumb{
+	display: block;
 	margin-right: 10px;
-    height: 60px;
+    
+        height: 150px;
+    background-position: center;
 }
 
 .ion-ios-star.icon-active{
 	color: #4BC54B !important;
 }
 
-.post-content .scroll {
+.post-content .post-wrapper {
+	float: left;
 	padding: 10px;
 }
 

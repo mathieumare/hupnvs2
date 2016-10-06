@@ -19,6 +19,7 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
      
 
             var prom = [];
+            prom.push(MyApHpDataService.syncConfig());
             prom.push(MyApHpDataService.syncOfflineMenu());
             prom.push(MyApHpDataService.syncOfflinePosts("post"))
             prom.push(MyApHpDataService.syncOfflinePosts("page"))
@@ -26,7 +27,7 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
 
             $q.all(prom).then(function() {
                 console.info("DB init : "+JSON.stringify(data));
-                            });     
+            });     
         });
     // });
 
@@ -173,13 +174,15 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
                         deferred.resolve(data);
                         
                     })
-                })
+                }
+            )
         })
         return deferred.promise;
     }
 
-
+    //---    
     //--- Methode de récupération des catégories (filtrées suivant les preferences utilisateur)
+    //---
     this.getWPCat = function(){
         var deferred = $q.defer();
 
@@ -206,8 +209,9 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
         return deferred.promise;
     }
 
-
+    //---
     //--- Methode de récupération des articles de la catégorie (filtrées suivant les preferences utilisateur)
+    //---
     this.getWPPosts = function(catID){
         var deferred = $q.defer();
         console.log('catID : '+catID)
@@ -277,8 +281,10 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
         // }
         return deferred.promise;
     }
-
+    
+    //---
     //--- Methode de récupération d'un article 
+    //---
     this.getWPPost = function(postID){
         console.log('getWPPost : '+postID)
         
@@ -310,26 +316,57 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
         var postData = [];
         $http.get(url,{ timeout: NetworkSettings.TimeOut }).then(
         function success(response){
-             sessionService.set("online", 1);
+            sessionService.set("online", 1);
             var data = response.data;
             //console.log("data : "+JSON.stringify(data));
-            var thumb = data.acf.vignette;                     //THUMB
+            var thumb = data.acf.vignette;                      //THUMB
+            // console.log('thumb : ' + thumb)
             var hasThumb = '';
             if(thumb){
+                // console.log('hasThumb ... ')
                 hasThumb = 'has-thumb';
             }
             var postTitle = data.title.rendered;
-            // var thumbTitle = data.acf.titre_vignette;                     //THUMB TITLE
+            // var thumbTitle = data.acf.titre_vignette;                    
             if(data.acf.titre_vignette){
-                postTitle = data.acf.titre_vignette
+                postTitle = data.acf.titre_vignette             //THUMB TITLE
             }
-            // wpPosts.push({postID: postID, title: title, thumb: thumb, hasThumb : hasThumb});
+            var classPortrait = ''                  //BLOC PORTRAIT
+            if(data.acf.bloc_portrait && data.acf.bloc_portrait > 0){
+                classPortrait = 'has-portrait'                  //BLOC PORTRAIT
+            }
+            var imgPortrait = '';
+            if(data.acf.image_portrait){
+                imgPortrait = data.acf.image_portrait           //IMAGE PORTRAIT
+            }
+            var nomPortrait = ''
+            if(data.acf.nom_portrait){
+                nomPortrait = data.acf.nom_portrait             //NOM PORTRAIT
+            }
+
+            var titrePortrait = '';
+            if(data.acf.nom_portrait){
+                titrePortrait = data.acf.titre_portrait         //TITRE PORTRAIT
+            }
             
-            postData.push({id: data.id,title: data.title.rendered,content: data.content.rendered, thumb: thumb, hasThumb : hasThumb})
+            //--- Préparation de la réponse de retour
+            // ATTENTION : Penser a Mettre a jour les structures de tables locales pour les faire correspondre
+            postData.push({
+                id: data.id,
+                title: postTitle,
+                content: data.content.rendered, 
+                thumb: thumb, 
+                hasThumb : hasThumb,
+                classPortrait : classPortrait,
+                imgPortrait : imgPortrait,
+                nomPortrait : nomPortrait,
+                titrePortrait : titrePortrait
+            })
             
             deferred.resolve(postData);  
              
         },
+
         function error(response){
             console.log('getWPPost : Offline '+postID)
             sessionService.set("online", 0);
@@ -347,7 +384,24 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
                     var postID = datas.rows.item(i).id;
                     var title = datas.rows.item(i).title;
                     var content = datas.rows.item(i).content;
-                    dataArray.push({id:postID, title: title, content : content});
+                    var thumb = datas.rows.item(i).thumb;
+                    var hasThumb = datas.rows.item(i).hasThumb;
+                    var classPortrait = datas.rows.item(i).classPortrait;
+                    var imgPortrait = datas.rows.item(i).imgPortrait;
+                    var nomPortrait = datas.rows.item(i).nomPortrait;
+                    var titrePortrait = datas.rows.item(i).titrePortrait;
+
+                    dataArray.push({
+                        id:postID, 
+                        title: title, 
+                        content : content,
+                        thumb: thumb, 
+                        hasThumb : hasThumb,
+                        classPortrait : classPortrait,
+                        imgPortrait : imgPortrait,
+                        nomPortrait : nomPortrait,
+                        titrePortrait : titrePortrait
+                    });
                 }
                 console.log('datas : ' + JSON.stringify(datas) )
                 deferred.resolve(dataArray);
@@ -597,7 +651,23 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
                 default: 
                     destURL = '#/app/cat/'+catID;    
             }
-            // console.log('----->'+destURL)
+            
+            var catInfos = sessionService.get('catInfos')
+            var catColor = "#aaa";
+            var catPicto = '';
+            if(catInfos){
+                for(var j=0; j<catInfos.length; j++){
+                console.log(catID);
+                if(catID ==catInfos[j].id_cat ){
+                    catColor = catInfos[j].couleur_caegorie;
+                    catPicto = catInfos[j].picto_categorie;
+
+                    console.log('----->'+catInfos[j].id_cat)    
+                }
+                
+            }
+            }
+            
             
             wpMenu[i] = {
                 catID: catID,
@@ -606,7 +676,9 @@ angular.module('hupnvs2', ['ionic', 'hupnvs2.controllers', 'ngStorage', 'ngCordo
                 destURL : destURL,
                 clickFn : clickFn,
                 iconplus: '',
-                iconminus: ''
+                iconminus: '',
+                color: catColor,
+                picto: catPicto
             }
             
             //--- Gestion des sous menus
@@ -990,6 +1062,24 @@ return {
             return updateStruct('POSTS', 'post_type');
         })
         .then(function(){
+            return updateStruct('POSTS', 'hasThumb');
+        })
+        .then(function(){
+            return updateStruct('POSTS', 'thumb');
+        })
+        .then(function(){
+            return updateStruct('POSTS', 'classPortrait');
+        })
+        .then(function(){
+            return updateStruct('POSTS', 'imgPortrait');
+        })
+        .then(function(){
+            return updateStruct('POSTS', 'nomPortrait');
+        })
+        .then(function(){
+            return updateStruct('POSTS', 'titrePortrait');
+        })
+        .then(function(){
             return updateStruct('CATEGORIES', 'entry_type');
         })
         .then(function(){
@@ -998,11 +1088,6 @@ return {
 
         return deferred.promise;
     }
- 
-    // $ionicPlatform.ready(function () {
-   
-    // })
-
 
  
     
@@ -1072,6 +1157,29 @@ return {
     //-----------------------------------------
     //--- Méthodes de gestion de posts offline
     //-----------------------------------------
+    syncConfig : function(){
+        var deferred = $q.defer();
+        $ionicPlatform.ready(function(){
+            var query1 = urlBase+ WpConfig.WpUrlPages+ '/' +WpConfig.WpPageConfig;
+            console.log('URL Config : '+query1);
+            $http.get(query1).then(
+                function success(response){
+                    
+                    var data = response.data;
+                    var catInfos = response.data.acf.categories;
+                    // console.log('TEST : '+response.data.acf.categories);
+                    sessionService.set("catInfos", catInfos);
+                    // for(var i=0; i < data.length; i++){
+
+                    // }
+
+                }
+            )
+            console.info('Offline Config Sync : ok');
+        })
+        return deferred.promise;
+    },
+
     syncOfflineCategories : function(){
         filter = getUserPrefs.getFilter();
         var query1 = urlBase+ WpConfig.WpUrlCat + "?per_page=100"+"&exclude=1";
@@ -1111,7 +1219,7 @@ return {
             var menuId = WpConfig.WpMenuId;
             var urlQuery = WpConfig.WpUrl+'wp-json/wp-api-menus/v2/menus/'+menuId;
             var prom = [];
-            //console.log ('getWPMenus : '+urlQuery)
+
             $http.get(urlQuery).then(
                 function success(response){
                     var data = response.data
@@ -1120,47 +1228,13 @@ return {
                     deferred.resolve(response); 
                  }
 
-             )
+            )
 
             console.info('Offline Menu Sync : ok');
         })
 
         return deferred.promise;
     },
-
-    // syncOfflinePostCat : function(){
-    //     console.log("syncOfflinePostCat");
-
-    // },
-    // syncOfflinePages : function(){
-    //     console.log("syncOfflinePages " );
-    //     var urlQuery = urlBase+ WpConfig.WpUrlPages+'?per_page=100';
-        
-    //     $http.get(urlQuery).success(function(data){
-    //         wpPosts = [];
-
-    //         var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (?, ?, ?, ?, ?)';
-            
-    //         for(var i = 0; i<data.length; i++){
-    //             var postID = data[i].id;                        //POSTID 
-    //             var postTitle = data[i].title.rendered;         //TITRE
-    //             var postContent = data[i].content.rendered;     //CONTENT
-    //             var favorite = 0;                               //FAVORITE
-    //             var post_type = 'page';                      //POST_TYPE
-    //             console.log("page id : "+postID);
-
-    //             var dataArgs = [];
-    //             dataArgs.push(postID);
-    //             dataArgs.push(postTitle);
-    //             dataArgs.push(postContent);
-    //             dataArgs.push(favorite);
-    //             dataArgs.push(post_type);
-
-
-    //         }
-    //     });
-    //     return 1;
-    // },
 
 
     syncOfflinePosts : function(postType){
@@ -1201,30 +1275,46 @@ return {
             var rowArgs = [];
             var query0 = 'DELETE FROM POST_CAT';
             prom.push(execSQL(query0));
-            // var query1 = 'DELETE FROM POSTS';
-            // prom.push(execSQL(query1));
-
-            // MyApHpDataService.publicExecSQL('SELECT DISTINCT POST_ID FROM POST_CAT').then(function(datas){
-            //     console.log('postCat : '+datas.rows.length)
-            // })
-
-            // var query01 = 'DELETE FROM POSTS ';
-            // prom.push(execSQL(query01))
 
 
-
-            var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (?, ?, ?, (SELECT favorite FROM POSTS WHERE id = ?), ?)';
-            //var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (?, ?, ?, ?, ?)';
+            var query = 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type, hasThumb, thumb, classPortrait, imgPortrait, nomPortrait, titrePortrait) VALUES (?, ?, ?, (SELECT favorite FROM POSTS WHERE id = ?), ?, ?, ?, ?, ?, ?, ?)';
 
             for(var i = 0; i<data.length; i++){
                 var postID = data[i].id;                        //POSTID 
-                var postTitle = data[i].title.rendered;         //TITRE
+                //var postTitle = data[i].title.rendered;         //TITRE
                 var postContent = data[i].content.rendered;     //CONTENT
-                var favorite = postID;                               //FAVORITE
+                var favorite = postID;                          //FAVORITE
                 var post_type = postType;                      //POST_TYPE
-                //console.log("post id : "+postID);
 
-                //var queryFav = 'SELECT favorite FROM POSTS WHERE id = ?';
+                var thumb = data[i].acf.vignette;                      //THUMB
+
+                var hasThumb = '';
+                if(thumb){
+                    hasThumb = 'has-thumb';
+                }
+
+                var postTitle = data[i].title.rendered
+
+                if(data[i].acf.titre_vignette){
+                    postTitle = data[i].acf.titre_vignette             //THUMB TITLE
+                }
+                var classPortrait = ''                  //BLOC PORTRAIT
+                if(data[i].acf.bloc_portrait && data[i].acf.bloc_portrait > 0){
+                    classPortrait = 'has-portrait'                  //BLOC PORTRAIT
+                }
+                var imgPortrait = '';
+                if(data[i].acf.image_portrait){
+                    imgPortrait = data[i].acf.image_portrait           //IMAGE PORTRAIT
+                }
+                var nomPortrait = ''
+                if(data[i].acf.nom_portrait){
+                    nomPortrait = data[i].acf.nom_portrait             //NOM PORTRAIT
+                }
+
+                var titrePortrait = '';
+                if(data[i].acf.nom_portrait){
+                    titrePortrait = data[i].acf.titre_portrait         //TITRE PORTRAIT
+                }
 
                 var dataArgs = [];
                 dataArgs.push(postID);
@@ -1233,10 +1323,16 @@ return {
                 dataArgs.push(favorite);
                 dataArgs.push(post_type);
 
-                // prom.push($cordovaSQLite.execute(db, query, dataArgs))
+                dataArgs.push(hasThumb);
+                dataArgs.push(thumb);
+                dataArgs.push(classPortrait);
+                dataArgs.push(imgPortrait);
+                dataArgs.push(nomPortrait);
+                dataArgs.push(titrePortrait);
+
                 
                 prom.push(execSQL(query,dataArgs));
-                //console.log('POST TYPE  :' +postType);
+
                 if(postType=="post"){
                     var postCategories = data[i].categories;//categories
                     for(var j = 0; j < postCategories.length; j++){
@@ -1278,81 +1374,6 @@ return {
           //return deferred.promise;
     },
 
-      //--- méthode d'ajout d'un POST offline
-      // addOfflinePost : function(postId, post_type){
-      //   $ionicPlatform.ready(function () {
-          
-      //     console.log("addOfflinePost : " + postId);
-
-
-      //     var url = urlBase+ WpConfig.WpUrlPosts+'/'+postId;
-      //     postData = [];
-      //     $http.get(url).then(
-      //        function success(response){
-      //           var data = response.data;
-      //           // console.log("data : "+JSON.stringify(data));
-      //           postData.push({id: data.id,title: data.title.rendered,content: data.content.rendered})
-      //           postIdData = data.id
-      //           postTitle = data.title.rendered;
-      //           postContent = data.content.rendered;
-      //           return($cordovaSQLite.execute(db, 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite) VALUES (? , ?, ?, ?)',[postIdData, postTitle, postContent, 0]));
-      //        }
-      //     )
-      //   });
-      // },
-
-      //--- méthode d'ajout d'une PAGE offline
-      //  addOfflinePage : function(pageId){
-      //   $ionicPlatform.ready(function () {
-          
-      //     console.log("addOfflinePost : " + pageId);
-
-      //     var urlBase = WpConfig.WpBaseUrl;
-      //     var url = urlBase+ 'pages/'+pageId;
-      //     postData = [];
-      //     $http.get(url).then(
-      //        function success(response){
-      //           var data = response.data;
-      //           // console.log("data : "+JSON.stringify(data));
-      //           postData.push({id: data.id,title: data.title.rendered,content: data.content.rendered})
-      //           postIdData = data.id
-      //           postTitle = data.title.rendered;
-      //           postContent = data.content.rendered;
-      //           return($cordovaSQLite.execute(db, 'INSERT OR REPLACE INTO POSTS (id, title, content, favorite, post_type) VALUES (? , ?, ?, ?, ?)',[postIdData, postTitle, postContent, 0, "page"]));
-      //        }
-      //     )
-      //   });
-      // },
-
-      //--- méthode de lecture d'un POST offline
-      // getOfflinePost : function(id, callback){
-      //   $ionicPlatform.ready(function () {
-      //     $cordovaSQLite.execute(db, 'SELECT * FROM POSTS where id = ? and post_type="post"', [id])
-      //     .then(function(res){
-      //       var items = [];
-
-      //       if(res.rows.length > 0) {       
-      //           items.push({id : res.rows.item(0).id, title : res.rows.item(0).title, content : res.rows.item(0).content});
-      //       }
-      //       callback(items);
-      //     }, onErrorQuery);
-      //   })
-      // },
-      
-      //--- méthode de lecture d'une PAGE offline
-      // getOfflinePage : function(id, callback){
-      //   $ionicPlatform.ready(function () {
-      //     $cordovaSQLite.execute(db, 'SELECT * FROM POSTS where id = ? and post_type="page"', [id])
-      //     .then(function(res){
-      //       var items = [];
-
-      //       if(res.rows.length > 0) {       
-      //           items.push({id : res.rows.item(0).id, title : res.rows.item(0).title, content : res.rows.item(0).content});
-      //       }
-      //       callback(items);
-      //     }, onErrorQuery);
-      //   })
-      // },
 
       //------------------------------------
       //--- Méthodes de gestion des favoris

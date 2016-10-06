@@ -469,6 +469,7 @@ $scope.openBrowser = function() {
         $scope.catTitle = '';
         $http.get(urlQueryCat,{ timeout: NetworkSettings.TimeOut }).then(
             function success(response){
+                console.log(response)
                 var data = response.data;
                 $scope.catTitle = data.name;
 
@@ -528,7 +529,13 @@ $scope.openBrowser = function() {
             $scope.wpPosts = data;
             $scope.postTitle = data[0].title;
             $scope.postContent = data[0].content;
+            $scope.hasThumb = data[0].hasThumb;
             $scope.postThumb = data[0].thumb;
+            $scope.classPortrait = data[0].classPortrait;
+            $scope.imgPortrait = data[0].imgPortrait;
+            $scope.nomPortrait = data[0].nomPortrait;
+            $scope.titrePortrait = data[0].titrePortrait;
+            // console.log('Post Has Thumb : '+data[0].hasThumb)
             //--- Gestion icone favoris
             $scope.favIcon = "ion-ios-star-outline";
             MyApHpDataService.checkFavQuery(data[0].id, function(data){

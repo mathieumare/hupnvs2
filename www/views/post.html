@@ -8,8 +8,22 @@
 	<ion-content has-subheader="false" class="post-content">
 		<!-- <button class="button button-block button-balanced" ng-click="addPostToFavorites()">Ajouter Favori</button> -->
 		<!-- <button class="button button-block button-assertive" ng-click="removePostFromFavorites()">Supprimer Favori</button> -->
-		<div class="cat-thumb" style="background-image: url('{{postThumb}}')"></div>
-		<h1 ng-bind-html="postTitle"></h1>
-		<div ng-bind-html="postContent"></div>
+		<div class="cat-thumb {{hasThumb}}" style="background-image: url('{{postThumb}}')">
+			<h1 ng-bind-html="postTitle "></h1>
+		</div>
+		
+		<div class="post-wrapper">
+			<div class='bloc-portrait {{classPortrait}}'>
+				<div class="img-portrait" style="background-image: url('{{imgPortrait}}')"></div>
+				<div class="infos-portrait">
+					<h2 class="nom-portrait" ng-bind-html="nomPortrait"></h2>
+					<h3 class="titre-portrait" ng-bind-html="titrePortrait"></h3>
+				</div>
+			</div>
+			<div ng-bind-html="postContent"></div>
+		</div>
+		
+		
+		
 	</ion-content>
 </ion-view>
